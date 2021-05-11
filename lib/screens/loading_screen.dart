@@ -1,5 +1,6 @@
 import 'package:clima/services/location.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -7,6 +8,8 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  String key = "47c4c66ae7f9940fb44e9736b1d66b9a";
+
   void getLocation() async {
     Location location = new Location();
     await location.getCurrentLocation();
@@ -14,14 +17,29 @@ class _LoadingScreenState extends State<LoadingScreen> {
     print(location.longitude);
   }
 
+  void getData() async {
+    Location location1 = new Location();
+    await location1.getCurrentLocation();
+    http.Response response = await http.get(
+        "https://api.openweathermap.org/data/2.5/weather?lat=${location1.latitude}&lon=${location1.longitude}&appid=${key}");
+    if (response.statusCode == 200) {
+      String data = response.body;
+      print(data);
+    } else {
+      print(response.statusCode);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     getLocation();
+    getData();
   }
 
   @override
   Widget build(BuildContext context) {
+    getData();
     return Scaffold(
       body: Center(
         // ignore: deprecated_member_use
