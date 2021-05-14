@@ -74,3 +74,8 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
+
+//
+// double temp = whetherData['main']['temp'];
+// int id = whetherData['weather'][0]['id'];
+// String nameCity = whetherData['name'];

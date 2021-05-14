@@ -1,7 +1,8 @@
 import 'package:clima/services/location.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:clima/services/networking.dart';
+
+const KEY = "47c4c66ae7f9940fb44e9736b1d66b9a";
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -9,57 +10,30 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  String key = "47c4c66ae7f9940fb44e9736b1d66b9a";
-
-  void getLocation() async {
-    Location location = new Location();
-    await location.getCurrentLocation();
-    print(location.latitude);
-    print(location.longitude);
-  }
-
-  void getData() async {
-    Location location1 = new Location();
-    await location1.getCurrentLocation();
-    http.Response response = await http.get(
-        "https://api.openweathermap.org/data/2.5/weather?lat=${location1.latitude}&lon=${location1.longitude}&appid=${key}");
-    if (response.statusCode == 200) {
-      String data = response.body;
-      print(data);
-      var decodedData = jsonDecode(data);
-
-      double temp = decodedData['main']['temp'];
-      int id = decodedData['weather'][0]['id'];
-      String nameCity = decodedData['name'];
-
-      print(temp);
-      print(id);
-      print(nameCity);
-    } else {
-      print(response.statusCode);
-    }
-  }
+  double latitude;
+  double longitude;
 
   @override
   void initState() {
     super.initState();
-    getLocation();
-    getData();
+    getLocationData();
   }
+
+  void getLocationData() async {
+    Location location = new Location();
+    await location.getCurrentLocation();
+
+    latitude = location.latitude;
+    longitude = location.longitude;
+    NetworkHelper networkHelper = new NetworkHelper(
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$KEY')
+
+    var whetherData = await networkHelper.getData();
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    getData();
-    return Scaffold(
-      body: Center(
-        // ignore: deprecated_member_use
-        child: RaisedButton(
-          onPressed: () {
-            getLocation();
-          },
-          child: Text('Get Location'),
-        ),
-      ),
-    );
+    return Scaffold();
   }
 }
