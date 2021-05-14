@@ -27,8 +27,16 @@ class _LocationScreenState extends State<LocationScreen> {
 
   void updateUI(dynamic whetherData) {
     setState(() {
-      temperatura = whetherData['main']['temp'];
-      var condition = whetherData['weather'][0]['id'];
+      if (whetherData == null) {
+        temperatura = 0;
+        weatherIcon = 'Error';
+        weatherMessage = 'Unable to get weather data';
+        cityName = '';
+        return;
+      }
+      dynamic temp = whetherData['main']['temp'];
+      temperatura = temp.toInt();
+      int condition = whetherData['weather'][0]['id'];
       cityName = whetherData['name'];
       weatherIcon = weatherModel.getWeatherIcon(condition);
       weatherMessage = weatherModel.getMessage(temperatura);
@@ -58,7 +66,10 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   // ignore: deprecated_member_use
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var whetherData = await weatherModel.getLocationWeather();
+                      updateUI(whetherData);
+                    },
                     child: Icon(
                       Icons.near_me,
                       size: 50.0,
