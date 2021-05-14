@@ -26,11 +26,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
     latitude = location.latitude;
     longitude = location.longitude;
     NetworkHelper networkHelper = new NetworkHelper(
-        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$KEY')
+        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$KEY');
 
     var whetherData = await networkHelper.getData();
   }
-
 
   @override
   Widget build(BuildContext context) {
